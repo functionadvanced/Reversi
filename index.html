@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<title>Reversi</title>
+		<link rel="stylesheet" href="bootstrap.min.css">
+		<script src="jquery-1.11.1.min.js"></script>
+		<script src="bootstrap.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<style>
+			body
+			{
+				background-color: white;
+			}
+			#board
+			{
+				width: 400px;
+				height: 400px;
+				margin: 0;
+				margin-top: 10px;
+			}
+			.grids
+			{
+				width: 48px;
+				height: 48px;
+				float: left;
+				border: 1px solid transparent;
+				cursor: default;
+				margin:1px;
+				background-color: green;
+				padding:5px;
+			}
+			#choose_color
+			{
+				position: relative;
+				top: -100px;
+				margin: auto;
+				width: 195px;
+			}
+			#brand
+			{
+				color:black;
+			}
+			.grids img
+			{
+				position:absolute;
+				display:block;
+				width:36px;
+				height:36px;
+			}
+			@media screen and (max-width:767px)
+			{
+				#board
+				{
+					width:296px;
+					height:296px;
+				}
+				.grids
+				{
+					width: 35px;
+					height: 35px;
+					padding: 4px;
+				}
+				.grids img
+				{
+					width:25px;
+					height:25px;
+				}
+				#choose_color
+				{
+					top: -50px;
+				}
+			}
+		</style>
+	</head>
+	<body onselectstart="return false">
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<span class="navbar-brand" id="brand">Reversi</span>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul	class="nav navbar-nav">
+						<li><a href="#" onclick="Init()"  data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">Restart</a></li>
+						<li><a href="#" onclick="$('#myModal').modal('show');"  data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">About me</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="container">
+			<div class="dropdown" style="display:none">
+			  <button id="dLabel" type="button" class='btn btn-primary' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				LEVEL: <strong id='level'>1</strong>
+			   <span class="caret"></span>
+			  </button>
+			  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+				<li><a href='#' onclick="$('#level')[0].innerText='1'">LEVEL 1</a></li>
+				<li><a href='#' onclick="$('#level')[0].innerText='2'">LEVEL 2</a></li>
+				<li><a href='#' onclick="$('#level')[0].innerText='3'">LEVEL 3</a></li>
+			  </ul>
+			</div>
+			<div id="board">
+				<script>
+					for (var i = 0;i < 64;++i){
+						if (i % 8 == 0)
+							document.write('<div style="clear:both"></div>');
+						document.write("<div class = 'grids' onclick = 'ClickGrid(this)'>"
+										+"<img src='b.png' style='display:none' id='b"+i+"'/><img src='w.png' style='display:none' id='w"+i+"'/>"
+										+"</div>");
+					}
+				</script>
+				<div id='choose_color'>
+					<button type='button' class='btn btn-danger' onclick='PickColor(-1);$("#choose_color").fadeOut()'>Pick black</button>
+					<button type='button' class='btn btn-danger' onclick='PickColor(1);$("#choose_color").fadeOut()' style='margin-left:10px'>Pick white</button>
+				</div>
+			</div>
+			<hr/>
+			<div>
+				<img src="b.png"/>
+				<span id='black_num'>2</span>
+				<img src="w.png" style='margin-left:30px'/>
+				<span id='white_num'>2</span>
+			</div>
+			
+			<!-- About me -->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+							<h4 class="modal-title" id="myModalLabel">About me</h4>
+						</div>
+						<div class="modal-body">
+							<strong>My name: Peizhong Ju</strong></br>
+							<strong>Email: jupeizhong@126.com</strong>
+						</div>
+						<div class="modal-footer">
+							<em style="float:left">If you have any suggestions, please contact me.</em>
+							<button type="button" class="btn btn-primary" data-dismiss="modal">I know</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--End info-->
+			<!-- Small modal -->
+			<div class="modal fade" id="end_info" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">Game Over</h4>
+					</div>
+					<h5 class="modal-body" id = "result"></h5>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="Init()">Play again</button>
+					</div>
+				</div>
+			  </div>
+			</div>
+		</div>
+		<script src="game.js"></script>
+	</body>
+</html>
